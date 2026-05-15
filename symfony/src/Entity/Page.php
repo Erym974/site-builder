@@ -6,6 +6,8 @@ use App\Repository\PageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: PageRepository::class)]
@@ -15,6 +17,7 @@ class Page
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+    #[Groups(['pages:find', 'pages:findOne'])]
     private ?Uuid $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'pages')]
@@ -22,15 +25,21 @@ class Page
     private ?Site $site = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['pages:find', 'pages:findOne'])]
     private ?string $path = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['pages:findOne:draft'])]
+    #[SerializedName('content')]
     private ?array $draftContent = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['pages:findOne:live'])]
+    #[SerializedName('content')]
     private ?array $liveContent = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['pages:find', 'pages:findOne'])]
     private ?string $title = null;
 
     public function getId(): ?Uuid

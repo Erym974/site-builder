@@ -1,29 +1,26 @@
 import {Render as PuckRender} from "@puckeditor/core";
 import "@puckeditor/core/puck.css";
 import {config} from "../puck.config.tsx";
-import { useLocation, useParams } from "react-router-dom";
-
-const initialData = {
-    root: {
-        props: {},
-    },
-    content: [
-        {
-            "type": "Heading",
-            "props": {
-                "title": "Test",
-                "id": "Heading-d312b3e3-a0ae-403b-8d2f-cf18656e4219"
-            }
-        }
-    ],
-};
+import { useParams } from "react-router-dom";
+import {useSite} from "@/hooks/useSite.ts";
+import {useQuery} from "@tanstack/react-query";
+import {fetchPage} from "@/api.ts";
+import NotFound from "@/pages/NotFound.tsx";
 
 export default function Render() {
-    const { renderMode } = useParams<{ renderMode: "live" | "draft" }>();
-    const { pathname } = useLocation();
-    const slug = pathname.replace(`/dashboard/render/${renderMode}`, "") || "/";
+    const { renderMode, '*': splat } = useParams<{ renderMode: "draft" | "live", "*": string }>();
+    const slug = '/' + (splat || '');
+    const { site } = useSite()
 
-    console.log({ renderMode, slug });
+    const { data: page, isError } = useQuery({
+        queryKey: ['page', site?.slug, slug],
+        queryFn: () => fetchPage(site!.slug, slug, renderMode!),
+        enabled: !!site,
+        retry: false,
+        staleTime: 1000 * 60 * 5,
+    });
 
-    return <PuckRender config={config} data={initialData} />;
+    if (isError) return <NotFound detail={`La page ${slug} n'existe pas.`} />;
+    if (!page) return <span>Chargement...</span>;
+    return <PuckRender config={config} data={page.content} />;
 }

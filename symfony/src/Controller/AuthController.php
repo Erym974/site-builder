@@ -12,10 +12,15 @@ class AuthController extends AbstractController
     #[Route(path: '/auth/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
+
+        if($this->getUser()) {
+            return $this->redirect('http://localhost:5173/dashboard');
+        }
+
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+        return $this->render('auth/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
 
     #[Route(path: '/auth/logout', name: 'app_logout')]
