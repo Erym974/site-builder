@@ -40,10 +40,17 @@ class Site
     #[ORM\OneToMany(targetEntity: Page::class, mappedBy: 'site', orphanRemoval: true)]
     private Collection $pages;
 
+    /**
+     * @var Collection<int, Template>
+     */
+    #[ORM\OneToMany(targetEntity: Template::class, mappedBy: 'site', orphanRemoval: true)]
+    private Collection $templates;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->pages = new ArrayCollection();
+        $this->templates = new ArrayCollection();
     }
 
     public function getId(): ?Uuid
@@ -126,6 +133,36 @@ class Site
             // set the owning side to null (unless already changed)
             if ($page->getSite() === $this) {
                 $page->setSite(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Template>
+     */
+    public function getTemplates(): Collection
+    {
+        return $this->templates;
+    }
+
+    public function addTemplate(Template $template): static
+    {
+        if (!$this->templates->contains($template)) {
+            $this->templates->add($template);
+            $template->setSite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTemplate(Template $template): static
+    {
+        if ($this->templates->removeElement($template)) {
+            // set the owning side to null (unless already changed)
+            if ($template->getSite() === $this) {
+                $template->setSite(null);
             }
         }
 

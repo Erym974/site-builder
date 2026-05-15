@@ -164,7 +164,7 @@ export function PageList({ pages, onAddPage, onDeletePage, onEditPage }: PageLis
             {contextMenu && (
                 <div
                     style={{ top: contextMenu.y, left: contextMenu.x }}
-                    className="fixed z-[9999] w-44 rounded-lg border border-gray-200 bg-white shadow-lg py-1"
+                    className="fixed z-9999 w-44 rounded-lg border border-gray-200 bg-white shadow-lg py-1"
                 >
                     <button
                         className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
