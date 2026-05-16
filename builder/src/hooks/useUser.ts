@@ -6,8 +6,9 @@ export function useUser() {
         queryKey: ['user', 'me'],
         queryFn: fetchMe,
         retry: false,
-        staleTime: 1000 * 60 * 5,
     });
+
+    console.log(user)
 
     return {
         user,

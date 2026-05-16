@@ -9,12 +9,16 @@ export interface Sites {
     id: string;
     name: string;
     slug: string;
+    coverImage: string;
+    logo: string;
 }
 
 export interface Site {
     id: string;
     name: string;
     slug: string;
+    coverImage: string;
+    logo: string;
 }
 
 export interface Pages {
